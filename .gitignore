@@ -1,0 +1,14 @@
+# 爬取快取與輸出
+cache/
+output/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+dist/
+
+# CodeGraph
+.codegraph/
