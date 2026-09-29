@@ -1,4 +1,5 @@
 """圖片資產處理的測試。"""
+
 from pathlib import Path
 
 from halcon_doc_skills.assets import (

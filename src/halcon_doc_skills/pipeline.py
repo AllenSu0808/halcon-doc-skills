@@ -1,4 +1,5 @@
 """爬取（crawl）與離線轉換（convert_all）流程。"""
+
 from __future__ import annotations
 
 import asyncio
@@ -153,9 +154,7 @@ async def _worker(
         while True:
             url = await queue.get()
             try:
-                links = await _handle_url(
-                    page, url, cache, assets_dir, report, options
-                )
+                links = await _handle_url(page, url, cache, assets_dir, report, options)
             except (PageFetchError, PlaywrightError) as exc:
                 log.error("失敗：%s（%s）", url, exc)
                 cache.record_failure(url, str(exc).splitlines()[0])

@@ -1,4 +1,5 @@
 """確認測試環境與樣本檔可用。"""
+
 from pathlib import Path
 
 FIXTURES = Path(__file__).parent / "fixtures"

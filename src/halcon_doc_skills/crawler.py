@@ -1,4 +1,5 @@
 """網址正規化、範圍過濾與去重佇列。"""
+
 from __future__ import annotations
 
 from urllib.parse import urldefrag, urljoin, urlsplit, urlunsplit

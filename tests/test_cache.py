@@ -1,4 +1,5 @@
 """PageCache 讀寫與完整性判斷的測試。"""
+
 from pathlib import Path
 
 from halcon_doc_skills.cache import PageCache
@@ -27,9 +28,7 @@ def test_save_and_load_roundtrip(tmp_path: Path) -> None:
     meta = cache.load_meta("abs_image.html")
     assert meta["title"] == "abs_image"
     assert meta["breadcrumb"][1] == ["Filters", "https://x/f"]
-    assert meta["links"] == [
-        "https://www.mvtec.com/doc/halcon/2605/en/add_image.html"
-    ]
+    assert meta["links"] == ["https://www.mvtec.com/doc/halcon/2605/en/add_image.html"]
 
 
 def test_is_complete_requires_meta_and_all_languages(tmp_path: Path) -> None:

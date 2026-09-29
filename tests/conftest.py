@@ -1,4 +1,5 @@
 """測試共用 fixture：以本機 HTTP 伺服器提供樣本網站。"""
+
 from __future__ import annotations
 
 import http.server

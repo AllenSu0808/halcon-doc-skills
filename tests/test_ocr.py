@@ -1,4 +1,5 @@
 """ocr 備援的測試：一律使用本機假網站，不連線 latexconvert.com。"""
+
 from __future__ import annotations
 
 import asyncio
@@ -32,8 +33,13 @@ def _store(tmp_path: Path, count: int) -> tuple[FormulaStore, list[str]]:
         keys.append(key)
         store.save(
             key,
-            {"svg": svg, "latex": None, "source": None, "reject": "cmex",
-             "ocr_attempts": 0},
+            {
+                "svg": svg,
+                "latex": None,
+                "source": None,
+                "reject": "cmex",
+                "ocr_attempts": 0,
+            },
         )
     return store, sorted(keys)
 

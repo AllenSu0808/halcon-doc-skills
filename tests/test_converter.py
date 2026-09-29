@@ -1,4 +1,5 @@
 """HTML → Markdown 轉換的測試（不需瀏覽器）。"""
+
 from pathlib import Path
 
 from halcon_doc_skills.assets import image_asset_name, normalize_svg, svg_asset_name
@@ -61,7 +62,9 @@ def test_dl_becomes_bullet_list(tmp_path: Path) -> None:
 
 
 def test_noise_is_removed(tmp_path: Path) -> None:
-    html = "<!--OP_REF_HEADER_END--><script>var a=1;</script><style>p{}</style><p>Hi</p>"
+    html = (
+        "<!--OP_REF_HEADER_END--><script>var a=1;</script><style>p{}</style><p>Hi</p>"
+    )
     md = _convert(html, tmp_path)
     assert md == "Hi\n"
 
@@ -135,7 +138,9 @@ def test_missing_image_keeps_absolute_url(tmp_path: Path) -> None:
 
 def test_images_survive_inside_headings_and_table_cells(tmp_path: Path) -> None:
     svg = '<svg viewBox="0 0 1 1"><path d="M0 0"/></svg>'
-    md = _convert(f"<h2>Title {svg}</h2><table><tr><td>{svg}</td></tr></table>", tmp_path)
+    md = _convert(
+        f"<h2>Title {svg}</h2><table><tr><td>{svg}</td></tr></table>", tmp_path
+    )
     assert md.count("![figure](../assets/") == 2
 
 

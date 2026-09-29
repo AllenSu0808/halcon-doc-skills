@@ -1,4 +1,5 @@
 """索引產生的測試。"""
+
 from halcon_doc_skills.indexer import (
     IndexEntry,
     build_index,

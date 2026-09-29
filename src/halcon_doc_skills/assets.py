@@ -1,4 +1,5 @@
 """圖片資產：行內 SVG 存檔與資產檔名規則。"""
+
 from __future__ import annotations
 
 import hashlib

@@ -1,4 +1,5 @@
 """以 Playwright 取出各語言的可見頁面內容。"""
+
 from __future__ import annotations
 
 import logging

@@ -1,4 +1,5 @@
 """產生各語言資料夾的 INDEX.md。"""
+
 from __future__ import annotations
 
 import posixpath
@@ -65,8 +66,6 @@ def build_index(lang: str, entries: Sequence[IndexEntry]) -> str:
             by_category[entry.category].append(entry)
     for category in sorted(by_category):
         lines += [f"## {category}", ""]
-        ordered = sorted(
-            by_category[category], key=lambda e: (e.title.lower(), e.name)
-        )
+        ordered = sorted(by_category[category], key=lambda e: (e.title.lower(), e.name))
         lines += [_line(e) for e in ordered] + [""]
     return "\n".join(lines).rstrip() + "\n"

@@ -89,9 +89,7 @@ _FAMILY = {
     "cmti": ("textit", _ASCII_TEXT),
     "cmbx": ("bf", _CMR),
 }
-_FONT_RE = re.compile(
-    r"^(?:(cmr|cmmi|cmsy|cmex|cmti|cmbx)(\d+)|(pcrr|ptmr|ptmri)8r)$"
-)
+_FONT_RE = re.compile(r"^(?:(cmr|cmmi|cmsy|cmex|cmti|cmbx)(\d+)|(pcrr|ptmr|ptmri)8r)$")
 _WRAP = {
     "tt": r"\texttt",
     "text": r"\text",

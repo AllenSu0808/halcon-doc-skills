@@ -1,4 +1,5 @@
 """crawl 與 convert_all 的測試。"""
+
 from __future__ import annotations
 
 import asyncio
@@ -82,9 +83,7 @@ def test_crawl_follows_links_records_failures_and_converts(
 ) -> None:
     cache = PageCache(tmp_path / "cache")
     out = tmp_path / "output"
-    report = asyncio.run(
-        crawl(cache, out, concurrency=2, retries=3, delay=0)
-    )
+    report = asyncio.run(crawl(cache, out, concurrency=2, retries=3, delay=0))
 
     assert cache.pages() == ["HThing.html", "index.html", "op_one.html", "toc_a.html"]
     assert report.fetched == 4

@@ -3,6 +3,7 @@
 其他模組請以 ``from . import config`` 匯入並在呼叫時讀取屬性，
 讓測試可以用 monkeypatch 改寫網址範圍。
 """
+
 from __future__ import annotations
 
 # 網址範圍：只爬 HALCON 26.05 英文版文件
@@ -27,6 +28,5 @@ DEFAULT_DELAY = 0.3
 
 # 類別頁在無內容語言只顯示這句話，視為空殼頁
 STUB_MARKER = (
-    "Use the tabs on the upper right to switch to a different "
-    "programming language."
+    "Use the tabs on the upper right to switch to a different programming language."
 )

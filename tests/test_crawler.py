@@ -1,4 +1,5 @@
 """URL 正規化、範圍過濾與去重的測試。"""
+
 from halcon_doc_skills.crawler import Frontier, md_name, normalize_url, page_name
 
 BASE = "https://www.mvtec.com/doc/halcon/2605/en/index.html"
@@ -6,7 +7,9 @@ PREFIX = "https://www.mvtec.com/doc/halcon/2605/en/"
 
 
 def test_relative_link_is_resolved() -> None:
-    assert normalize_url("toc_1dmeasuring.html", BASE) == PREFIX + "toc_1dmeasuring.html"
+    assert (
+        normalize_url("toc_1dmeasuring.html", BASE) == PREFIX + "toc_1dmeasuring.html"
+    )
 
 
 def test_fragment_and_query_are_removed() -> None:
@@ -25,7 +28,9 @@ def test_out_of_scope_links_are_rejected() -> None:
     assert normalize_url("../../../../documentation.html", BASE) is None
     assert normalize_url("http://www.mvtec.com/", BASE) is None
     assert normalize_url("https://www.linkedin.com/company/x", BASE) is None
-    assert normalize_url("https://www.mvtec.com/doc/halcon/2505/en/x.html", BASE) is None
+    assert (
+        normalize_url("https://www.mvtec.com/doc/halcon/2505/en/x.html", BASE) is None
+    )
 
 
 def test_non_html_and_pseudo_links_are_rejected() -> None:

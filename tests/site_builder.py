@@ -1,4 +1,5 @@
 """建立測試用網站：真實樣本頁 (en/) 與迷你網站 (mini/)。"""
+
 from __future__ import annotations
 
 import re

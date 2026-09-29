@@ -1,4 +1,5 @@
 """formulas：字形解碼、公式標記與快取的測試。"""
+
 from __future__ import annotations
 
 import asyncio
@@ -198,8 +199,16 @@ def test_store_results_and_pending_ocr(tmp_path: Path) -> None:
     store = FormulaStore(tmp_path / "latex")
     a, b, c = "a" * 16, "b" * 16, "c" * 16
     base = {"latex": None, "source": None, "reject": "cmex"}
-    store.save(a, {"svg": "<svg/>", "latex": "x", "source": "decode", "reject": None,
-                   "ocr_attempts": 0})
+    store.save(
+        a,
+        {
+            "svg": "<svg/>",
+            "latex": "x",
+            "source": "decode",
+            "reject": None,
+            "ocr_attempts": 0,
+        },
+    )
     store.save(b, {**base, "svg": "<svg>b</svg>", "ocr_attempts": 0})
     store.save(c, {**base, "svg": "<svg>c</svg>", "ocr_attempts": 2})
     assert store.keys() == [a, b, c]

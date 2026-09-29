@@ -1,4 +1,5 @@
 """爬取結果的本機快取：各語言可見 HTML 與頁面中繼資料。"""
+
 from __future__ import annotations
 
 import json
@@ -12,9 +13,7 @@ from .extractor import PageExtract
 class PageCache:
     """管理 ``html/<lang>/<page>``、``meta/<page>.json`` 與 ``failed.txt``。"""
 
-    def __init__(
-        self, root: Path, langs: Sequence[str] = config.LANGS
-    ) -> None:
+    def __init__(self, root: Path, langs: Sequence[str] = config.LANGS) -> None:
         self.root = Path(root)
         self.langs = tuple(langs)
 

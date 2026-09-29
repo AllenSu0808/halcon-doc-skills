@@ -1,4 +1,5 @@
 """extract_page 的整合測試（需要 Playwright Chromium）。"""
+
 from __future__ import annotations
 
 import asyncio
