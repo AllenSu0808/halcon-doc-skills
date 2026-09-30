@@ -1,7 +1,7 @@
 # HALCON 程式撰寫 Skill 設計文件
 
 日期：2026/09/30
-狀態：待使用者審閱
+狀態：已實作
 
 ## 1. 目標與範圍
 
@@ -43,6 +43,8 @@ src/halcon_doc_skills/
   cli.py             # 新增子命令 build-skill
 skill_template/      # 手寫、版本控管的 skill 原始檔
   SKILL.md
+  scripts/halcon_ref.py
+  scripts/halcon_check.py
   scripts/halcon_doc.py
   pitfalls/hdevelop.md
   pitfalls/dotnet.md
@@ -53,6 +55,8 @@ skill_template/      # 手寫、版本控管的 skill 原始檔
 ```
 dist/skill/halcon/
   SKILL.md
+  scripts/halcon_ref.py
+  scripts/halcon_check.py
   scripts/halcon_doc.py
   pitfalls/<lang>.md
   references/<lang>/
@@ -68,9 +72,9 @@ dist/skill/halcon/
 ## 4. 資料產生流程（`build-skill`）
 
 ### 4.1 步驟
-1. 清空並建立 `dist/skill/halcon/`（`--out` 可改路徑）。
+1. 清空並建立 `dist/skill/halcon/`（`--out` 可改路徑；`--out` 已存在但沒有 `SKILL.md` 時拒絕覆寫）。
 2. 複製 `skill_template/` 全部內容。
-3. 對每種語言：複製 `output/<lang>/*.md` 到 `references/<lang>/`，並以 `signatures.py` 產生兩份 TSV。
+3. 對每種語言：複製 `output/<lang>/*.md` 到 `references/<lang>/`（複製時把 U+00A0 換成一般空白），並以 `signatures.py` 產生兩份 TSV。
 4. 印出每種語言的統計：頁數、簽章列數、參數列數、解析失敗頁面清單。
 5. 任一語言的運算子頁解析失敗率 > 1% 時以 exit code 1 結束。
 
@@ -82,20 +86,20 @@ UTF-8、tab 分隔、首行為欄名。一個簽章一列。
 | 欄位 | 說明 |
 |---|---|
 | `name` | 該語言的名稱（`FindShapeModel` / `find_shape_model`） |
-| `kind` | `operator` 或 `class` |
+| `kind` | `operator` / `method` / `constructor` / `class` |
 | `owner` | dotnet：`HOperatorSet` 或類別名（如 `HShapeModel`）；其他語言與類別列留空 |
 | `signature` | 簽章原文（去掉反引號）；類別列留空 |
 | `summary` | `## Name` 的一句話摘要 |
 | `page` | 頁面檔名（如 `find_shape_model.md`） |
 
-類別頁另外為 `## Constructors`、`## Methods` 中每個名稱產生一列：`kind=method`（或 `constructor`）、`owner=類別名`、`signature` 留空，供 `class` 與 `check` 使用。
+類別頁只產生一列 `kind=class`；`class` 子命令使用運算子頁中 `owner=<類別>` 的 `method` / `constructor` 列。
 
 ### 4.3 `PARAMS.tsv`
 一個運算子的一個參數一列（以該語言的參數名為準）。
 
 | 欄位 | 說明 |
 |---|---|
-| `name` | 運算子名稱 |
+| `page` | 頁面檔名（Python `_s` 版本與原版共用） |
 | `param` | 參數名 |
 | `direction` | `input_object` / `input_control` / `output_object` / `output_control` |
 | `type` | `→` 後的型別字串 |
@@ -126,6 +130,7 @@ UTF-8、tab 分隔、首行為欄名。一個簽章一列。
 | `check <file…>` | 驗證程式碼 | 可疑處清單：`file:line 問題 → 建議` |
 
 ### 5.3 `check` 規則（保守、只報高信心問題）
+- 語言優先依副檔名判斷（`.cs` / `.py` / `.hdev` / `.hdvp`），否則用專案推斷。
 - 抽取呼叫（以正規表示式，不做完整語法分析）：
   - dotnet：僅 `HOperatorSet.X(`。
   - python：`ha.x(` / `halcon.x(`（模組別名由 `import halcon as <alias>` 取得）。
@@ -160,7 +165,7 @@ description: Use when writing, reviewing, or debugging code that calls MVTec HAL
 6. **陷阱**：依語言指向 `pitfalls/<lang>.md`，需要時才讀。
 
 ### 6.3 `pitfalls/<lang>.md`
-每份 30～60 條，由 Claude 依文件與常見錯誤起草、使用者審閱。涵蓋方向例如：
+每份 30～60 條，由 Claude 依文件與常見錯誤起草、使用者審閱。每條標示來源：文件 / 經驗。涵蓋方向例如：
 - dotnet：`HObject` / `HImage` 需 `Dispose` 或 `using`；`HTuple` 取值用 `.D` / `.I` / `.S`；handle 生命週期；`HOperatorSet` 與物件導向 API 混用注意事項。
 - python：多重回傳需解構；`HObject` 不是 numpy 陣列；`MaybeSequence` 參數。
 - hdevelop：`dev_*` 運算子僅在 IDE 有效；tuple 索引與字串引號規則。
