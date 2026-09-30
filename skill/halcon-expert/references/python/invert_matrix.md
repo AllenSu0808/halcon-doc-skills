@@ -1,0 +1,166 @@
+# invert_matrix (Operator)
+
+## Name
+
+`invert_matrix` — Invert a matrix.
+
+## Signature
+
+`def invert_matrix(matrix_id: HHandle, matrix_type: str, epsilon: float) -> HHandle`
+
+## Description
+
+The operator `invert_matrix` computes the inverse of the
+`Matrix` defined by the matrix handle *`matrix_id`*. A
+new matrix `MatrixInv` is generated with the result and the
+matrix handle *`matrix_inv_id`* of this matrix is returned.
+Access to the elements of the matrix is possible e.g., with the
+operator [`get_full_matrix`](get_full_matrix.md).
+
+For *`epsilon`* = 0, the inverse is computed. The type of the
+`Matrix` can be selected via *`matrix_type`*. The
+following values are supported: *"general"* for general,
+*"symmetric"* for symmetric, *"positive_definite"* for
+symmetric positive definite, *"tridiagonal"* for tridiagonal,
+*"upper_triangular"* for upper triangular,
+*"permuted_upper_triangular"* for permuted upper triangular,
+*"lower_triangular"* for lower triangular, and
+*"permuted_lower_triangular"* for permuted lower triangular
+matrices.
+
+*Example 1:*
+
+*`matrix_type`* = *"general"*,
+*`epsilon`* = *0*
+$$Matrix = \begin{bmatrix} 1.0 & 3.0 & 3.0 \\ 4.0 & 5.0 & 6.0 \\ 5.0 & 5.0 & 7.0 \\end{bmatrix}$$ ![figure](../assets/71e0ded32f75d48a.svg)
+$$\rightarrow \text{ MatrixInv } = \left[\begin{array}{ccc}-1.25 & 1.50 & -0.75\\-0.50 & 2.00 & -1.50\\ 1.25 & -2.50 & 1.75\end{array}\right]$$ ![figure](../assets/4150ef9bcc75d63f.svg)
+
+*Example 2:*
+
+*`matrix_type`* = *"upper_triangular"*,
+*`epsilon`* = *0*
+$$\mathrm{Matrix} = \begin{bmatrix}1.0 & 3.0 & 3.0 \\ 0 & 2.0 & 6.0 \\ 0 & 0 & 10.0\end{bmatrix}$$ ![figure](../assets/ab139fb3ca8fc327.svg)
+$$\rightarrow MatrixInv = \left[\begin{array}{ccc} 1.00 & -1.50 & 0.60 \\ 0 & 0.50 & -0.30 \\ 0 & 0 & 0.10 \end{array}\right]$$ ![figure](../assets/097b1e9ce996f9d0.svg)
+
+*Example 3:*
+
+*`matrix_type`* = *"permuted_upper_triangular"*,
+*`epsilon`* = *0*
+$$\text{Matrix} = \begin{bmatrix} 1.0 & 3.0 & 3.0 \\ 0 & 0 & 10.0 \\ 0 & 2.0 & 6.0 \end{bmatrix}$$ ![figure](../assets/f08d7f32a295b408.svg)
+$$\rightarrow MatrixInv = \left[\begin{array}{ccc} 1.00 & -1.50 & 0.60 \\ 0 & 0.50 & -0.30 \\ 0 & 0 & 0.10 \end{array}\right]$$ ![figure](../assets/097b1e9ce996f9d0.svg)
+
+For *`epsilon`* > 0, the pseudo inverse is computed using a
+singular value decomposition (SVD). During the computation, all
+singular values less than the value *`epsilon`* $\times$
+the largest singular value are set to 0. For these values no
+internal division is done to prevent a division by zero. If a
+square matrix is computed with the SVD algorithm the computation
+takes more time. The type of the matrix must be set to
+*`matrix_type`* = *"general"*.
+
+*Example:*
+
+*`matrix_type`* = *"general"*,
+*`epsilon`* = *2.2204e-16*
+$$\text{Matrix = }\begin{bmatrix}3.0 & 1.0 & -2.0 & 5.0\\-5.0 & 7.0 & 2.0 & -6.0\\-9.0 & -4.0 & 1.0 & 4.0\end{bmatrix}$$ ![figure](../assets/13a09935c002ac36.svg)
+$$\rightarrow MatrixInv = \begin{bmatrix}-0.0021 & -0.0482 & -0.0813\\ 0.1435 & 0.1137 & -0.0137\\ -0.0519 & -0.0015 & 0.0028\\ 0.1518 & 0.0056 & 0.0526\end{bmatrix}$$ ![figure](../assets/023d8739ed9f974f.svg)
+
+Note: The relative accuracy of the floating point representation of
+the used data type (double) is *`epsilon`* = 2.2204e-16.
+
+It should be also noted that in the examples there are differences
+in the meaning of the numbers of the output matrices: The results
+of the elements are per definition a certain value if the number of
+this value is shown as an integer number, e.g., 0 or 1. If the
+number is shown as a floating point number, e.g., 0.0 or 1.0, the
+value is computed.
+
+## Attention
+
+For *`matrix_type`* = *"symmetric"*,
+*"positive_definite"*, or *"upper_triangular"* the
+upper triangular part of the input `Matrix` must contain
+the relevant information of the matrix. The strictly lower
+triangular part of the matrix is not referenced. For
+*`matrix_type`* = *"lower_triangular"* the lower
+triangular part of the input `Matrix` must contain the
+relevant information of the matrix. The strictly upper triangular
+part of the matrix is not referenced. For *`matrix_type`* =
+*"tridiagonal"*, only the main diagonal, the superdiagonal,
+and the subdiagonal of the input `Matrix` are used. The
+other parts of the matrix are not referenced. If the referenced
+part of the input `Matrix` is not of the specified type,
+an exception is raised.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`matrix_id`** (input_control)  matrix `→` HHandle
+
+Matrix handle of the input matrix.
+
+**`matrix_type`** (input_control)  string `→` str
+
+The type of the input matrix.
+
+Default:
+"general"
+
+List of values:
+"general", "lower_triangular", "permuted_lower_triangular", "permuted_upper_triangular", "positive_definite", "symmetric", "tridiagonal", "upper_triangular"
+
+**`epsilon`** (input_control)  real `→` float
+
+Type of inversion.
+
+Default:
+0.0
+
+Suggested values:
+0.0, 2.2204e-16
+
+**`matrix_inv_id`** (output_control)  matrix `→` HHandle
+
+Matrix handle with the inverse matrix.
+
+## Result
+
+If the parameters are valid, the operator `invert_matrix`
+returns the value 2 (
+H_MSG_TRUE)
+. If necessary, an exception is raised.
+
+## Possible Predecessors
+
+`create_matrix`
+
+## Possible Successors
+
+`get_full_matrix`,
+`get_value_matrix`
+
+## Alternatives
+
+`invert_matrix_mod`
+
+## See also
+
+`transpose_matrix`,
+`transpose_matrix_mod`
+
+## References
+
+David Poole: “Linear Algebra: A Modern Introduction”; Thomson;
+Belmont; 2006.
+  
+Gene H. Golub, Charles F. van Loan: “Matrix Computations”; The
+Johns Hopkins University Press; Baltimore and London; 1996.
+
+## Module
+
+Foundation

@@ -1,0 +1,82 @@
+# TupleUniq (Operator)
+
+## Name
+
+`TupleUniq` — Discard all but one of successive identical elements of a tuple.
+
+## Signature
+
+`static void HOperatorSet.TupleUniq(HTuple tuple, out HTuple uniq)`
+
+`HTuple HTuple.TupleUniq()`
+
+## Description
+
+`TupleUniq` discards all but one of successive identical
+elements from the input tuple *`tuple`* and returns the
+remaining elements in *`uniq`*.
+For example, if *`tuple`* contains the values
+[0,0,1,1,1,2,0,1], the output tuple *`uniq`* will contain
+the values [0,1,2,0,1]. It is allowed to mix strings and numbers in the
+input tuple.
+
+To get a tuple *`uniq`* that contains all different entries of
+*`tuple`* exactly once, use the operator [`TupleSort`](tuple_sort.md) first. Note
+however that in this case the output tuple *`uniq`* is sorted.
+The result of the above example then is [0,1,2].
+
+### Exception: Empty input tuple
+
+If the input tuple is empty, the operator returns an empty tuple.
+
+### HDevelop In-line Operation
+
+HDevelop provides an in-line operation for `TupleUniq`,
+which can be used in an expression in the following syntax:
+
+[`Uniq := uniq(Tuple)`](https://www.mvtec.com/doc/halcon/manuals/hdevelop_users_guide/hdevelop_language_operations_tuple_0000.html)
+
+As mentioned above, you can use [`TupleSort`](tuple_sort.md) to truly get all
+unique elements of *`tuple`*.
+
+[`Uniq := uniq(sort(Tuple))`](https://www.mvtec.com/doc/halcon/manuals/hdevelop_users_guide/hdevelop_language_operations_tuple_0000.html)
+
+## Execution Information
+
+- Multithreading type: independent (runs in parallel even with exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`tuple`** (input_control)  tuple(-array) `→` [HTuple](HTuple.md) (*int* / long / double / string)
+
+Input tuple.
+
+**`uniq`** (output_control)  tuple(-array) `→` [HTuple](HTuple.md) (*int* / long / double / string)
+
+Tuple without successive identical elements.
+
+## Example (HDevelop)
+
+```
+Tuple := [0,0,1,1,1,2,0,1]
+*
+tuple_uniq (Tuple, Uniq)
+*
+tuple_sort (Uniq, Sorted)
+tuple_uniq (Sorted, Uniq1)
+```
+
+## Possible Predecessors
+
+`TupleInverse`,
+`TupleSort`
+
+## Alternatives
+
+`TupleIntersection`
+
+## Module
+
+Foundation

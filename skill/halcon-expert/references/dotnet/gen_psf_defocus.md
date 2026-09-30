@@ -1,0 +1,148 @@
+# GenPsfDefocus (Operator)
+
+## Name
+
+`GenPsfDefocus` — Generate an impulse response of an uniform out-of-focus blurring.
+
+## Signature
+
+`static void HOperatorSet.GenPsfDefocus(out HObject psf, HTuple PSFwidth, HTuple PSFheight, HTuple blurring)`
+
+`void HImage.GenPsfDefocus(int PSFwidth, int PSFheight, double blurring)`
+
+## Description
+
+`GenPsfDefocus` generates an impulse response (spatial domain)
+of an uniform out-of-focus blurring and writes it into an image of
+HALCON image type `real`.
+*`blurring`* specifies the extent of blurring by defining
+the “blur radius” (out-of-focus blurring maps each image pixel on a small
+circle with a radius of *`blurring`* - specified in “number of
+pixels”). If specified less than zero, the absolute value of
+*`blurring`* is used.
+The result image of `GenPsfDefocus` encloses an spatial
+domain impulse response of the specified blurring. Its representation
+presumes the origin in the upper left corner. This results in the
+following disposition of an NxM sized image:
+
+- first rectangle (“upper left”):
+  (image coordinates xb = 0..(N/2)-1, yb = 0..(M/2)-1)
+
+  - conforms to the fourth quadrant of the Cartesian coordinate system,
+  encloses values of the impulse response
+  at position x = 0..N/2 and y = 0..-M/2
+- second rectangle (“upper right”):
+  (image coordinates xb = N/2..N-1, yb = 0..(M/2)-1)
+
+  - conforms to the third quadrant of the Cartesian coordinate system,
+  encloses values of the impulse response
+  at position x = -N/2..-1 and y = -1..-M/2
+- third rectangle (“lower left”):
+  (image coordinates xb = 0..(N/2)-1, yb = M/2..M-1)
+
+  - conforms to the first quadrant of the Cartesian coordinate system,
+  encloses values of the impulse response
+  at position x = 1..N/2 and y = M/2..0
+- fourth rectangle (“lower right”):
+  (image coordinates xb = N/2..N-1, yb = M/2..M-1)
+
+  - conforms to the second quadrant of the Cartesian coordinate system,
+  encloses values of the impulse response
+  at position x = -N/2..-1 and y = M/2..1
+
+This representation conforms to that of the impulse response parameter of
+the HALCON-operator [`WienerFilter`](wiener_filter.md). So one can use
+`GenPsfDefocus` to generate an impulse response for
+Wiener filtering.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`psf`** (output_object)  image `→` [HImage](HImage.md) (real)
+
+Impulse response of uniform out-of-focus blurring.
+
+**`PSFwidth`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Width of result image.
+
+Default:
+256
+
+Suggested values:
+128, 256, 512, 1024
+
+Value range:
+`1
+≤
+PSFwidth`
+
+**`PSFheight`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Height of result image.
+
+Default:
+256
+
+Suggested values:
+128, 256, 512, 1024
+
+Value range:
+`1
+≤
+PSFheight`
+
+**`blurring`** (input_control)  real `→` [HTuple](HTuple.md) (*double*)
+
+Degree of Blurring.
+
+Default:
+5.0
+
+Suggested values:
+1.0, 5.0, 10.0, 15.0, 18.0
+
+## Result
+
+`GenPsfDefocus` returns 2 (
+H_MSG_TRUE)
+if all parameters are
+correct.
+
+## Possible Predecessors
+
+`SimulateMotion`,
+`GenPsfMotion`
+
+## Possible Successors
+
+`SimulateDefocus`,
+`WienerFilter`,
+`WienerFilterNi`
+
+## See also
+
+`SimulateDefocus`,
+`GenPsfMotion`,
+`SimulateMotion`,
+`WienerFilter`,
+`WienerFilterNi`
+
+## References
+
+Reginald L. Lagendijk, Jan Biemond: Iterative Identification and Restoration
+of Images, Kluwer Academic Publishers Boston/Dordrecht/London, 1991
+  
+M. Lückenhaus:“Grundlagen des Wiener-Filters und seine Anwendung in der
+Bildanalyse”; Diplomarbeit;
+Technische Universität München, Institut für Informatik;
+Lehrstuhl Prof. Radig; 1995.
+
+## Module
+
+Foundation

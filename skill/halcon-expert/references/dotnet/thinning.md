@@ -1,0 +1,178 @@
+# Thinning (Operator)
+
+## Name
+
+`Thinning` — Remove the result of a hit-or-miss operation from a region.
+
+## Warning
+
+**`Thinning` is obsolete and is only provided for
+reasons of backward compatibility.**
+
+## Signature
+
+`static void HOperatorSet.Thinning(HObject region, HObject structElement1, HObject structElement2, out HObject regionThin, HTuple row, HTuple column, HTuple iterations)`
+
+`HRegion HRegion.Thinning(HRegion structElement1, HRegion structElement2, int row, int column, int iterations)`
+
+## Description
+
+`Thinning` performs a thinning of the input regions
+using morphological operations. The operator first applies a
+hit-or-miss-transformation to *`region`* (cf.
+[`HitOrMiss`](hit_or_miss.md)), and then removes the detected points from
+the input region. The parameter *`iterations`* determines
+the number of iterations performed.
+
+For the choice of the structuring elements *`structElement1`*
+and *`structElement2`*, as well as for *`row`* and
+*`column`*, the same restrictions described under
+[`HitOrMiss`](hit_or_miss.md) apply.
+
+Structuring elements (*`structElement1`*,
+*`structElement2`*) can be generated with operators such as
+[`GenCircle`](gen_circle.md), [`GenRectangle1`](gen_rectangle1.md), [`GenRectangle2`](gen_rectangle2.md),
+[`GenEllipse`](gen_ellipse.md), [`DrawRegion`](draw_region.md),
+[`GenRegionPolygon`](gen_region_polygon.md), [`GenRegionPoints`](gen_region_points.md), etc.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on tuple level.
+
+## Parameters
+
+**`region`** (input_object)  region(-array) `→` [HRegion](HRegion.md)
+
+Regions to be processed.
+
+**`structElement1`** (input_object)  region `→` [HRegion](HRegion.md)
+
+Structuring element for the foreground.
+
+**`structElement2`** (input_object)  region `→` [HRegion](HRegion.md)
+
+Structuring element for the background.
+
+**`regionThin`** (output_object)  region(-array) `→` [HRegion](HRegion.md)
+
+Result of the thinning operator.
+
+**`row`** (input_control)  point.y `→` [HTuple](HTuple.md) (*int* / long)
+
+Row coordinate of the reference point.
+
+Default:
+0
+
+Value range:
+`0
+≤
+row
+≤
+511` (lin)
+
+Minimum increment:
+1
+
+Recommended increment:
+1
+
+**`column`** (input_control)  point.x `→` [HTuple](HTuple.md) (*int* / long)
+
+Column coordinate of the reference point.
+
+Default:
+0
+
+Value range:
+`0
+≤
+column
+≤
+511` (lin)
+
+Minimum increment:
+1
+
+Recommended increment:
+1
+
+**`iterations`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Number of iterations.
+
+Default:
+1
+
+Suggested values:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 30, 40, 50
+
+Value range:
+`1
+≤
+iterations` (lin)
+
+Minimum increment:
+1
+
+Recommended increment:
+1
+
+## Complexity
+
+Let F be the area of an input region, F1 the area of the
+structuring element 1, and F2 the area of the structuring element
+2. Then the runtime complexity for one object is:
+$$O\left(\text{Iterations} \cdot \sqrt{F} \cdot \left(\sqrt{F1} + \sqrt{F2}\right)\right).$$ ![figure](../assets/25502f7020ba92cd.svg)
+
+## Result
+
+`Thinning` returns 2 (
+H_MSG_TRUE)
+if all parameters are correct.
+The behavior in case of empty or no input region can be set via:
+
+- no region:
+  `set_system('no_object_result',<RegionResult>)`
+- empty region:
+  `set_system('empty_region_result',<RegionResult>)`
+
+Otherwise, an exception is raised.
+
+## Possible Predecessors
+
+`Threshold`,
+`Regiongrowing`,
+`Connection`,
+`Union1`,
+`Watersheds`,
+`ClassNdimNorm`,
+`GenCircle`,
+`GenEllipse`,
+`GenRectangle1`,
+`GenRectangle2`,
+`DrawRegion`,
+`GenRegionPoints`,
+`GenRegionPolygonFilled`
+
+## Possible Successors
+
+`ReduceDomain`,
+`SelectShape`,
+`AreaCenter`,
+`Connection`
+
+## Alternatives
+
+`ThinningGolay`,
+`ThinningSeq`
+
+## See also
+
+`HitOrMiss`
+
+## Module
+
+Foundation

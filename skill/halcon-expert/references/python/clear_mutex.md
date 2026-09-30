@@ -1,0 +1,54 @@
+# clear_mutex (Operator)
+
+## Name
+
+`clear_mutex` — Clear the mutex synchronization object.
+
+## Signature
+
+`def clear_mutex(mutex_handle: HHandle) -> None`
+
+## Description
+
+`clear_mutex` destroys the mutex object given by *`mutex_handle`*.
+The mutex must be unlocked. After calling
+`clear_mutex`, the mutex can no longer be used. The
+handle *`mutex_handle`* becomes invalid.
+
+## Execution Information
+
+- Multithreading type: independent (runs in parallel even with exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+This operator modifies the state of the following input parameter:
+
+- mutex_handle
+
+During execution of this operator, access to the value of this parameter must be synchronized if it is used across multiple threads.
+
+## Parameters
+
+**`mutex_handle`** (input_control, state is modified)  mutex `→` HHandle
+
+Mutex synchronization object.
+
+## Result
+
+If the mutex handle is valid, the operator `clear_mutex`
+returns 2 (
+H_MSG_TRUE)
+.
+If necessary, an exception is raised.
+
+## Possible Predecessors
+
+`create_mutex`
+
+## See also
+
+`create_mutex`
+
+## Module
+
+Foundation

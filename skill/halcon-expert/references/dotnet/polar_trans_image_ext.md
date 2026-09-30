@@ -1,0 +1,253 @@
+# PolarTransImageExt (Operator)
+
+## Name
+
+`PolarTransImageExt` — Transform an annular arc in an image to polar coordinates.
+
+## Signature
+
+`static void HOperatorSet.PolarTransImageExt(HObject image, out HObject polarTransImage, HTuple row, HTuple column, HTuple angleStart, HTuple angleEnd, HTuple radiusStart, HTuple radiusEnd, HTuple width, HTuple height, HTuple interpolation)`
+
+`HImage HImage.PolarTransImageExt(HTuple row, HTuple column, double angleStart, double angleEnd, HTuple radiusStart, HTuple radiusEnd, int width, int height, string interpolation)`
+
+`HImage HImage.PolarTransImageExt(double row, double column, double angleStart, double angleEnd, double radiusStart, double radiusEnd, int width, int height, string interpolation)`
+
+## Description
+
+`PolarTransImageExt` transforms the annular arc specified
+by the center point (*`row`*, *`column`*), the radii
+*`radiusStart`* and *`radiusEnd`* and the angles
+*`angleStart`* and *`angleEnd`* in the image
+*`image`* to its polar coordinate version in the image
+*`polarTransImage`* of the dimensions *`width`*
+x *`height`*.
+
+The upper left pixel in the output image always corresponds to the
+point in the input image that is specified by *`radiusStart`*
+and *`angleStart`*. Analogously, the lower right pixel in the
+output image always corresponds to the point in the input image that
+is specified by *`radiusEnd`* and *`angleEnd`*. In the
+usual mode (*`angleStart`* < *`angleEnd`* and
+*`radiusStart`* < *`radiusEnd`*), the polar
+transformation is performed in the mathematically positive
+orientation (counterclockwise). Furthermore, points with smaller
+radii lie in the upper part of the output image. By suitably
+exchanging the values of these parameters (e.g., *`angleStart`*
+> *`angleEnd`* or *`radiusStart`* >
+*`radiusEnd`*), any desired orientation of the output image can
+be achieved.
+
+The parameter *`interpolation`* is used to select the
+interpolation method *"bilinear"* or
+*"nearest_neighbor"*. With *"nearest_neighbor"*, the
+gray value of a pixel in the output image is determined by the gray
+value of the closest pixel in the input image. With
+*"bilinear"*, the gray value of a pixel in the output image
+is determined by bilinear interpolation of the gray values of the
+four closest pixels in the input image. The mode
+*"bilinear"* results in images of better quality, but is
+slower than the mode *"nearest_neighbor"*.
+
+The angles can be chosen from all real numbers. Center point and
+radii can be real as well. However, if they are both integers and
+the difference of *`radiusEnd`* and *`radiusStart`* equals
+the height *`height`* of the destination image, calculation
+will be sped up through an optimized routine.
+
+The radii and angles are inclusive, which means that the first row
+of the target image contains the circle with radius
+*`radiusStart`* and the last row contains the circle with
+radius *`radiusEnd`*. For complete circles, where the
+difference between *`angleStart`* and *`angleEnd`* equals
+$2\pi$ (360 degrees), this also means that the first
+column of the target image will be the same as the last.
+
+To avoid this, do not make this difference $2\pi$, but
+$2\pi\bigl(1 - \frac{1}{\mathrm{widt}h}\bigr)$ ![figure](../assets/7a628e5fd266ca23.svg) degrees instead.
+
+The call
+`polar_trans_image(Image, PolarTransImage, Row, Column, Width, Height)`
+produces the same result as the call
+`polar_trans_image_ext(Image, PolarTransImage, Row-0.5, Column-0.5, 6.2831853, 6.2831853/Width, 0, Height-1, Width, Height, 'nearest_neighbor')`.
+
+The offset of 0.5 is necessary since [`PolarTransImage`](polar_trans_image.md) does
+not do exact nearest neighbor interpolation and the radii and angles
+can be calculated using the information in the above paragraph and
+knowing that [`PolarTransImage`](polar_trans_image.md) does not handle its arguments
+inclusively. The start angle is bigger than the end angle to make
+`PolarTransImageExt` go clockwise, just like
+[`PolarTransImage`](polar_trans_image.md) does.
+
+`PolarTransImageExt` can be executed on an OpenCL device if the
+input image does not exceed the maximum size of image objects of the selected
+device. Due to numerical reasons, there can be slight differences in
+the output compared to the execution on the CPU.
+
+Additionally, for images of type byte, int2 or
+uint2 the system parameter *"int_zooming"* selects between
+fast calculation in fixed point arithmetics
+(*"int_zooming"* = *"true"*)
+and highly accurate calculation in floating point arithmetics
+(*"int_zooming"* = *"false"*). Fixed point calculation
+can lead to minor gray value deviations and pixels with undefined gray
+values.
+
+### Further Information
+
+For an explanation of the different 2D coordinate systems
+used in HALCON, see the introduction of chapter
+[Transformations / 2D Transformations](toc_transformations_2dtransformations.md).
+
+## Attention
+
+For speed reasons, the domain of the input image is ignored. The
+output image always has a complete rectangle as its domain.
+
+## Execution Information
+
+- Supports OpenCL compute devices.
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on tuple level.
+- Automatically parallelized on channel level.
+- Automatically parallelized on internal data level.
+
+## Parameters
+
+**`image`** (input_object)  (multichannel-)image(-array) `→` [HImage](HImage.md) (byte* / int2* / uint2* / real*) **allowed for compute devices*
+
+Input image.
+
+**`polarTransImage`** (output_object)  (multichannel-)image(-array) `→` [HImage](HImage.md) (byte / int2 / uint2 / real)
+
+Output image.
+
+**`row`** (input_control)  number `→` [HTuple](HTuple.md) (*double* / int / long)
+
+Row coordinate of the center of the arc.
+
+Default:
+256
+
+Suggested values:
+0, 16, 32, 64, 128, 240, 256, 480, 512
+
+**`column`** (input_control)  number `→` [HTuple](HTuple.md) (*double* / int / long)
+
+Column coordinate of the center of the arc.
+
+Default:
+256
+
+Suggested values:
+0, 16, 32, 64, 128, 256, 320, 512, 640
+
+**`angleStart`** (input_control)  angle.rad `→` [HTuple](HTuple.md) (*double*)
+
+Angle of the ray to be mapped to the first
+column of the output image.
+
+Default:
+0.0
+
+Suggested values:
+0.0, 0.78539816, 1.57079632, 3.141592654, 6.2831853, 12.566370616
+
+**`angleEnd`** (input_control)  angle.rad `→` [HTuple](HTuple.md) (*double*)
+
+Angle of the ray to be mapped to the last
+column of the output image.
+
+Default:
+6.2831853
+
+Suggested values:
+0.0, 0.78539816, 1.57079632, 3.141592654, 6.2831853, 12.566370616
+
+**`radiusStart`** (input_control)  number `→` [HTuple](HTuple.md) (*double* / int / long)
+
+Radius of the circle to be mapped to the first
+row of the output image.
+
+Default:
+0
+
+Suggested values:
+0, 16, 32, 64, 100, 128, 256, 512
+
+Value range:
+`0
+≤
+radiusStart`
+
+**`radiusEnd`** (input_control)  number `→` [HTuple](HTuple.md) (*double* / int / long)
+
+Radius of the circle to be mapped to the last
+row of the output image.
+
+Default:
+100
+
+Suggested values:
+0, 16, 32, 64, 100, 128, 256, 512
+
+Value range:
+`0
+≤
+radiusEnd`
+
+**`width`** (input_control)  extent.x `→` [HTuple](HTuple.md) (*int* / long)
+
+Width of the output image.
+
+Default:
+512
+
+Suggested values:
+256, 320, 512, 640, 800, 1024
+
+Value range:
+`0
+≤
+width
+≤
+32767`
+
+**`height`** (input_control)  extent.y `→` [HTuple](HTuple.md) (*int* / long)
+
+Height of the output image.
+
+Default:
+512
+
+Suggested values:
+240, 256, 480, 512, 600, 1024
+
+Value range:
+`0
+≤
+height
+≤
+32767`
+
+**`interpolation`** (input_control)  string `→` [HTuple](HTuple.md) (*string*)
+
+Interpolation method for the transformation.
+
+Default:
+"nearest_neighbor"
+
+List of values:
+"bilinear", "nearest_neighbor"
+
+## See also
+
+`PolarTransImageInv`,
+`PolarTransRegion`,
+`PolarTransRegionInv`,
+`PolarTransContourXld`,
+`PolarTransContourXldInv`
+
+## Module
+
+Foundation

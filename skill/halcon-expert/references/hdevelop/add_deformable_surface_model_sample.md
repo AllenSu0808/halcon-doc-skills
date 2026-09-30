@@ -1,0 +1,87 @@
+# add_deformable_surface_model_sample (Operator)
+
+## Name
+
+`add_deformable_surface_model_sample` — Add a sample deformation to a deformable surface model
+
+## Signature
+
+`add_deformable_surface_model_sample( : : DeformableSurfaceModel, ObjectModel3D : )`
+
+## Description
+
+The operator `add_deformable_surface_model_sample` adds the example
+deformation passed in *`ObjectModel3D`* to the deformable surface model
+*`DeformableSurfaceModel`*.
+The point cloud given in *`ObjectModel3D`* must have exactly as many
+points as the sampled deformation model, and is usually the result of the
+operator [`find_deformable_surface_model`](find_deformable_surface_model.md) or
+[`refine_deformable_surface_model`](refine_deformable_surface_model.md).
+The deformable surface model must have been created beforehand using, for
+example, [`create_deformable_surface_model`](create_deformable_surface_model.md).
+The operator re-trains the deformable surface model including the
+passed deformation. This allows [`find_deformable_surface_model`](find_deformable_surface_model.md) to
+find deformations that are similar to the one given in
+*`ObjectModel3D`*.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+This operator supports canceling timeouts and interrupts.
+
+This operator modifies the state of the following input parameter:
+
+- DeformableSurfaceModel
+
+During execution of this operator, access to the value of this parameter must be synchronized if it is used across multiple threads.
+
+## Parameters
+
+**`DeformableSurfaceModel`** (input_control, state is modified)  deformable_surface_model `→`  (handle)
+
+Handle of the deformable surface model.
+
+**`ObjectModel3D`** (input_control)  object_model_3d(-array) `→`  (handle)
+
+Handle of the deformed 3D object model.
+
+## Result
+
+`add_deformable_surface_model_sample` returns 2 (
+H_MSG_TRUE)
+if all parameters
+are correct. If necessary, an exception is raised.
+
+## Possible Predecessors
+
+`create_deformable_surface_model`,
+`find_deformable_surface_model`,
+`refine_deformable_surface_model`
+
+## Possible Successors
+
+`find_deformable_surface_model`,
+`refine_deformable_surface_model`,
+`get_deformable_surface_model_param`,
+`write_deformable_surface_model`,
+`clear_deformable_surface_model`
+
+## Alternatives
+
+`read_deformable_surface_model`
+
+## See also
+
+`find_deformable_surface_model`,
+`refine_deformable_surface_model`,
+`read_deformable_surface_model`,
+`create_deformable_surface_model`,
+`write_deformable_surface_model`,
+`clear_deformable_surface_model`
+
+## Module
+
+3D Metrology

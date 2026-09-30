@@ -1,0 +1,92 @@
+# distance_sc (Operator)
+
+## Name
+
+`distance_sc` — Calculate the distance between a line segment and one contour.
+
+## Signature
+
+`def distance_sc(contour: HObject, row_1: MaybeSequence[Union[float, int]], column_1: MaybeSequence[Union[float, int]], row_2: MaybeSequence[Union[float, int]], column_2: MaybeSequence[Union[float, int]]) -> Tuple[Sequence[float], Sequence[float]]`
+
+`def distance_sc_s(contour: HObject, row_1: MaybeSequence[Union[float, int]], column_1: MaybeSequence[Union[float, int]], row_2: MaybeSequence[Union[float, int]], column_2: MaybeSequence[Union[float, int]]) -> Tuple[float, float]`
+
+## Description
+
+The operator `distance_sc` calculates the distance between
+a line segment and the line segments of a contour.
+*`row_1`*, *`column_1`*, *`row_2`*, *`column_2`*
+are the start and end coordinates of a line segment,
+*`contour`* represents the input contour.
+The parameters *`distance_min`* and *`distance_max`*
+contain the resulting distances.
+
+### Parameter Broadcasting
+
+This operator supports parameter broadcasting.
+This means that each parameter can be given as a tuple of length
+*1* or *N*.
+Parameters with tuple length *1* will be repeated internally
+such that the number of distances is always *N*.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`contour`** (input_object)  xld_cont(-array) `→` HObject
+
+Input contour.
+
+**`row_1`** (input_control)  point.y(-array) `→` MaybeSequence[Union[float, int]]
+
+Row coordinate of the first point of the line segment.
+
+**`column_1`** (input_control)  point.x(-array) `→` MaybeSequence[Union[float, int]]
+
+Column coordinate of the first point of the line segment.
+
+**`row_2`** (input_control)  point.y(-array) `→` MaybeSequence[Union[float, int]]
+
+Row coordinate of the second point of the line segment.
+
+**`column_2`** (input_control)  point.x(-array) `→` MaybeSequence[Union[float, int]]
+
+Column coordinate of the second point of the line segment.
+
+**`distance_min`** (output_control)  real(-array) `→` Sequence[float]
+
+Minimum distance between the line segment and
+the contour.
+
+**`distance_max`** (output_control)  real(-array) `→` Sequence[float]
+
+Maximum distance between the line segment and
+the contour.
+
+## Result
+
+[`distance_sr`](distance_sr.md) returns 2 (
+H_MSG_TRUE)
+.
+
+## Alternatives
+
+`distance_lc`,
+`distance_pc`,
+`distance_cc`,
+`distance_cc_min`
+
+## See also
+
+`distance_sr`,
+`distance_lr`,
+`distance_pr`,
+`select_xld_point`,
+`test_xld_point`
+
+## Module
+
+Foundation

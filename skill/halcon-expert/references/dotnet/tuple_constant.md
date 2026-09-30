@@ -1,0 +1,58 @@
+# TupleConstant (Operator)
+
+## Name
+
+`TupleConstant` — Generate a tuple with the value of a HDevelop language constant.
+
+## Signature
+
+`static void HOperatorSet.TupleConstant(HTuple name, out HTuple value)`
+
+`static HTuple HTuple.TupleConstant(HTuple name)`
+
+## Description
+
+`TupleConstant` generates a new tuple with the value of a HDevelop
+language constant.
+
+### HDevelop In-line Operation
+
+HDevelop provides an in-line operation for `TupleConstant`,
+which can be used in an expression in the following syntax:
+
+[`Value := constant(Name)`](https://www.mvtec.com/doc/halcon/manuals/hdevelop_users_guide/hdevelop_language_operations_misc_0000.html)
+
+## Attention
+
+H_INT64_MIN and H_INT64_MAX will both produce an error if 32-bit HALCON is
+being used, as they cannot be represented in the then 32-bit integer used in
+tuples.
+
+H_INT_MIN and H_INT_MAX will produce different values depending on whether
+HALCON 32- or 64-bit is being used.
+
+## Execution Information
+
+- Multithreading type: independent (runs in parallel even with exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`name`** (input_control)  tuple `→` [HTuple](HTuple.md) (*string*)
+
+The name of the HDevelop language constant as string.
+
+Default:
+"H_INT32_MIN"
+
+List of values:
+"HNULL", "H_FLOAT32_EPSILON", "H_FLOAT32_MAX", "H_FLOAT32_MIN", "H_FLOAT32_MIN_POSITIVE", "H_FLOAT64_EPSILON", "H_FLOAT64_MAX", "H_FLOAT64_MIN", "H_FLOAT64_MIN_POSITIVE", "H_FLOAT_INFINITY", "H_FLOAT_NAN", "H_FLOAT_NEG_INFINITY", "H_INT32_MAX", "H_INT32_MIN", "H_INT64_MAX", "H_INT64_MIN", "H_INT_MAX", "H_INT_MIN", "H_MSG_FAIL", "H_MSG_FALSE", "H_MSG_TRUE", "H_MSG_VOID", "H_TYPE_ANY", "H_TYPE_HANDLE", "H_TYPE_INT", "H_TYPE_MIXED", "H_TYPE_REAL", "H_TYPE_STRING", "false", "true"
+
+**`value`** (output_control)  tuple `→` [HTuple](HTuple.md) (*int* / long / double / HHandle)
+
+The value of the constant.
+
+## Module
+
+Foundation

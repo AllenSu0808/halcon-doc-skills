@@ -1,0 +1,151 @@
+# GenDerivativeFilter (Operator)
+
+## Name
+
+`GenDerivativeFilter` — Generate a derivative filter in the frequency domain.
+
+## Signature
+
+`static void HOperatorSet.GenDerivativeFilter(out HObject imageDerivative, HTuple derivative, HTuple exponent, HTuple norm, HTuple mode, HTuple width, HTuple height)`
+
+`void HImage.GenDerivativeFilter(string derivative, int exponent, string norm, string mode, int width, int height)`
+
+## Description
+
+`GenDerivativeFilter` generates a derivative filter in the
+frequency domain. The derivative to be computed is determined by
+*`derivative`*. *`exponent`* specifies the exponent used
+in the reverse transform. It must be set to the same value that is
+used in [`FftGeneric`](fft_generic.md). If [`FftImageInv`](fft_image_inv.md) is used in
+the reverse transform, *`exponent`* = *1* must be
+used. However, since the derivative image typically contains
+negative values, [`FftGeneric`](fft_generic.md) should always be used for the
+reverse transform. To achieve a maximum overall efficiency of the
+filtering operation, the parameter *`norm`* can be used to
+specify the normalization factor of the filter. If
+[`FftGeneric`](fft_generic.md) and *`norm`* = *"n"* is used the
+normalization in the FFT can be avoided. *`mode`* can be used
+to determine where the DC term of the filter lies or whether the
+filter should be used in the real-valued FFT. If
+[`FftGeneric`](fft_generic.md) is used, *"dc_edge"* can be used to gain
+efficiency. If [`FftImage`](fft_image.md) and [`FftImageInv`](fft_image_inv.md) are used
+for filtering, *`norm`* = *"none"* and *`mode`*
+= *"dc_center"* must be used. If [`RftGeneric`](rft_generic.md) is
+used, *`mode`* = *"rft"* must be used.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`imageDerivative`** (output_object)  image `→` [HImage](HImage.md) (complex)
+
+Derivative filter as image in the frequency domain.
+
+**`derivative`** (input_control)  string `→` [HTuple](HTuple.md) (*string*)
+
+Derivative to be computed.
+
+Default:
+"x"
+
+Suggested values:
+"x", "y", "xx", "xy", "yy", "xxx", "xxy", "xyy", "yyy"
+
+**`exponent`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Exponent used in the reverse transform.
+
+Default:
+1
+
+Suggested values:
+-1, 1
+
+**`norm`** (input_control)  string `→` [HTuple](HTuple.md) (*string*)
+
+Normalizing factor of the filter.
+
+Default:
+"none"
+
+List of values:
+"n", "none"
+
+**`mode`** (input_control)  string `→` [HTuple](HTuple.md) (*string*)
+
+Location of the DC term in the frequency domain.
+
+Default:
+"dc_center"
+
+List of values:
+"dc_center", "dc_edge", "rft"
+
+**`width`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Width of the image (filter).
+
+Default:
+512
+
+Suggested values:
+128, 160, 192, 256, 320, 384, 512, 640, 768, 1024, 2048, 4096, 8192
+
+**`height`** (input_control)  integer `→` [HTuple](HTuple.md) (*int* / long)
+
+Height of the image (filter).
+
+Default:
+512
+
+Suggested values:
+120, 128, 144, 240, 256, 288, 480, 512, 576, 1024, 2048, 4096, 8192
+
+## Example (HDevelop)
+
+```
+* Generate a smoothed derivative filter.
+gen_gauss_filter (ImageGauss, Sigma, Sigma, 0, 'n', 'dc_edge', 512, 512)
+convert_image_type (ImageGauss, ImageGaussComplex, 'complex')
+gen_derivative_filter (ImageDerivX, 'x', 1, 'none', 'dc_edge', 512, 512)
+mult_image (ImageGaussComplex, ImageDerivX, ImageDerivXGauss, 1, 0)
+* Filter an image with the smoothed derivative filter.
+fft_generic (Image, ImageFFT, 'to_freq', -1, 'none', 'dc_edge', 'complex')
+convol_fft (ImageFFT, ImageDerivXGauss, Filtered)
+fft_generic (Filtered, ImageX, 'from_freq', 1, 'none', 'dc_edge', 'real')
+```
+
+## Result
+
+`GenDerivativeFilter` returns 2 (
+H_MSG_TRUE)
+if all parameters are
+correct. If necessary, an exception is raised.
+
+## Possible Predecessors
+
+`FftImage`,
+`FftGeneric`,
+`RftGeneric`
+
+## Possible Successors
+
+`ConvolFft`
+
+## See also
+
+`FftImageInv`,
+`GenGaussFilter`,
+`GenMeanFilter`,
+`GenLowpass`,
+`GenBandpass`,
+`GenBandfilter`,
+`GenHighpass`
+
+## Module
+
+Foundation

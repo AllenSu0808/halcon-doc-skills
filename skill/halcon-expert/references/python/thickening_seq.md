@@ -1,0 +1,122 @@
+# thickening_seq (Operator)
+
+## Name
+
+`thickening_seq` — Add the result of a hit-or-miss operation to a region (sequential).
+
+## Warning
+
+**`thickening_seq` is obsolete and is only provided for
+reasons of backward compatibility.**
+
+## Signature
+
+`def thickening_seq(region: HObject, golay_element: str, iterations: int) -> HObject`
+
+## Description
+
+`thickening_seq` calculates the sequential thickening of
+the input regions with a structuring element from the Golay alphabet
+(*`golay_element`*). To do so, `thickening_seq`
+calls the operator [`thickening_golay`](thickening_golay.md) with all possible
+rotations of the structuring element *`iterations`* times.
+The following structuring elements are available:
+
+'l', 'm', 'd', 'c', 'e', 'i', 'f', 'f2', 'h', 'k'.
+
+The Golay elements, together with all possible rotations, are
+described with the operator [`golay_elements`](golay_elements.md). For all
+elements of the Golay alphabet, except for 'c', the foreground and
+background masks are exchanged in order to have an effect for them
+on the outer boundary of the region. The element 'c' can be used to
+generate the convex hull of the input region if enough iterations
+are performed.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on tuple level.
+
+## Parameters
+
+**`region`** (input_object)  region(-array) `→` HObject
+
+Regions to be processed.
+
+**`region_thick`** (output_object)  region(-array) `→` HObject
+
+Result of the thickening operator.
+
+**`golay_element`** (input_control)  string `→` str
+
+Structuring element from the Golay alphabet.
+
+Default:
+"h"
+
+List of values:
+"c", "d", "e", "f", "f2", "h", "i", "k", "l", "m"
+
+**`iterations`** (input_control)  integer `→` int
+
+Number of iterations.
+
+Default:
+1
+
+Suggested values:
+1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 17, 20, 30, 40, 50, 70, 100, 200
+
+Value range:
+`1
+≤
+iterations` (lin)
+
+Minimum increment:
+1
+
+Recommended increment:
+1
+
+## Complexity
+
+Let F be the area of an input region. Then the runtime complexity for one
+region is:
+$$O(Iterations \cdot 6 \cdot \sqrt{F})$$ ![figure](../assets/2bd06aa8b3654f52.svg)
+
+## Result
+
+`thickening_seq` returns 2 (
+H_MSG_TRUE)
+if all parameters are
+correct. The behavior in case of empty or no input region can be
+set via:
+
+- no region:
+  `set_system('no_object_result',<RegionResult>)`
+- empty region:
+  `set_system('empty_region_result',<RegionResult>)`
+
+Otherwise, an exception is raised.
+
+## Possible Successors
+
+`reduce_domain`,
+`select_shape`,
+`area_center`,
+`connection`
+
+## Alternatives
+
+`thickening_golay`,
+`thickening`
+
+## See also
+
+`erosion_golay`,
+`thinning_seq`
+
+## Module
+
+Foundation

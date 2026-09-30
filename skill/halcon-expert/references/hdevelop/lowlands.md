@@ -1,0 +1,96 @@
+# lowlands (Operator)
+
+## Name
+
+`lowlands` — Detect all gray value lowlands.
+
+## Signature
+
+`lowlands(Image : Lowlands : : )`
+
+## Description
+
+`lowlands` extracts all points from *`Image`* with a gray value
+less or equal to the gray value of its neighbors (8-neighborhood) and
+returns them in *`Lowlands`*. Each lowland is returned as a separate
+region.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on tuple level.
+
+## Parameters
+
+**`Image`** (input_object)  singlechannelimage(-array) `→` object (byte / direction / cyclic / int1 / int2 / uint2 / int4 / int8 / real)
+
+Image to be processed.
+
+**`Lowlands`** (output_object)  region-array `→` object
+
+Extracted lowlands as regions (one region for
+each lowland).
+
+## Example (C++)
+
+```
+#include "HIOStream.h"
+#if !defined(USE_IOSTREAM_H)
+using namespace std;
+#endif
+#include "HalconCpp.h"
+using namespace Halcon;
+
+int main (int argc, char *argv[])
+{
+  if (argc != 2)
+  {
+    cout << "Usage : " << argv[0] << " <name of image>" << endl;
+    return (-1);
+  }
+
+  HImage   image (argv[1]);
+  HWindow  win;
+
+  image.Display (win);
+
+  HImage       cres = image.CornerResponse (5, 0.04);
+  HRegionArray mins = cres.Lowlands ();
+
+  win.SetColored (12);
+  mins.Display (win);
+  win.Click ();
+
+  return (0);
+}
+```
+
+## Possible Predecessors
+
+`binomial_filter`,
+`gauss_filter`,
+`smooth_image`
+
+## Possible Successors
+
+`area_center`,
+`get_region_points`,
+`select_shape`
+
+## Alternatives
+
+`lowlands_center`,
+`gray_skeleton`,
+`local_min`
+
+## See also
+
+`monotony`,
+`topographic_sketch`,
+`corner_response`,
+`texture_laws`
+
+## Module
+
+Foundation

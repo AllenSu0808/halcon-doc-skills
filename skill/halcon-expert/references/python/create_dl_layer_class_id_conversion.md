@@ -1,0 +1,213 @@
+# create_dl_layer_class_id_conversion (Operator)
+
+## Name
+
+`create_dl_layer_class_id_conversion` — Create a class ID conversion layer.
+
+## Signature
+
+`def create_dl_layer_class_id_conversion(dllayer_input: HHandle, layer_name: str, conversion_mode: str, gen_param_name: MaybeSequence[str], gen_param_value: MaybeSequence[Union[int, float, str]]) -> HHandle`
+
+## Description
+
+The operator `create_dl_layer_class_id_conversion` creates a class ID
+conversion layer whose handle is returned in *`dllayer_class_id_conversion`*.
+The layer converts between the IDs used internally by the network and the
+target / output class IDs.
+
+The network internally uses consecutive integer values starting from 0
+as IDs (the number of values depends on the model type). In case
+the target / output class IDs differ from the internal IDs, this layer
+can be used to convert between them. The target / output class IDs are
+stored in the model parameter *"class_ids"* (see
+[`get_dl_model_param`](get_dl_model_param.md) for more information on this parameter).
+If no *"class_ids"* are set, this layer copies the input to the
+output.
+
+The parameter *`conversion_mode`* specifies the conversion direction
+and accepts the following values:
+
+- *"from_class_id"*: Convert target / output class IDs into
+  internal IDs.
+  This mode is typically used after a target input layer.
+- *"to_class_id"*: Convert internal IDs into target / output
+  class IDs.
+  This mode is typically used after an inference output layer.
+
+The parameter *`dllayer_input`* determines the feeding input layer and
+expects the layer handle as value.
+
+The parameter *`layer_name`* sets an individual layer name.
+Note that if creating a model using [`create_dl_model`](create_dl_model.md) each layer of
+the created network must have a unique name.
+
+The following generic parameters *`gen_param_name`* and the corresponding
+values *`gen_param_value`* are supported:
+
+- ***"is_inference_output"*:** —
+
+  Determines whether [`apply_dl_model`](apply_dl_model.md) will include the output of this
+  layer in the dictionary `dlresult_batch` even without specifying this
+  layer in `outputs` (*"true"*) or not (*"false"*).
+
+  Default:
+   *"false"*
+
+Certain parameters of layers created using this operator
+`create_dl_layer_class_id_conversion` can be set and retrieved using
+further operators.
+The following tables give an overview, which parameters can be set
+using [`set_dl_model_layer_param`](set_dl_model_layer_param.md) and which ones can be retrieved
+using [`get_dl_model_layer_param`](get_dl_model_layer_param.md) or [`get_dl_layer_param`](get_dl_layer_param.md). Note, the
+operators [`set_dl_model_layer_param`](set_dl_model_layer_param.md) and [`get_dl_model_layer_param`](get_dl_model_layer_param.md)
+require a model created by [`create_dl_model`](create_dl_model.md).
+
+| Layer Parameters | `set` | `get` |
+| --- | --- | --- |
+| *"input_layer"* (*`dllayer_input`*) |  | `x` |
+| *"name"* (*`layer_name`*) | `x` | `x` |
+| *"output_layer"* (*`dllayer_class_id_conversion`*) |  | `x` |
+| *"shape"* |  | `x` |
+| *"to_class_id"* (*`conversion_mode`*) |  | `x` |
+| *"type"* |  | `x` |
+
+| Generic Layer Parameters | `set` | `get` |
+| --- | --- | --- |
+| *"is_inference_output"* | `x` | `x` |
+| *"num_trainable_params"* |  | `x` |
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`dllayer_input`** (input_control)  dl_layer `→` HHandle
+
+Feeding layer.
+
+**`layer_name`** (input_control)  string `→` str
+
+Name of the output layer.
+
+**`conversion_mode`** (input_control)  string `→` str
+
+Direction of the class ID conversion.
+
+Default:
+"from_class_id"
+
+List of values:
+"from_class_id", "to_class_id"
+
+**`gen_param_name`** (input_control)  attribute.name(-array) `→` MaybeSequence[str]
+
+Generic input parameter names.
+
+Default:
+[]
+
+List of values:
+"is_inference_output"
+
+**`gen_param_value`** (input_control)  attribute.value(-array) `→` MaybeSequence[Union[int, float, str]]
+
+Generic input parameter values.
+
+Default:
+[]
+
+Suggested values:
+"true", "false"
+
+**`dllayer_class_id_conversion`** (output_control)  dl_layer `→` HHandle
+
+Class IDs conversion layer.
+
+## Example (HDevelop)
+
+```
+* Example demonstrating the usage of
+* create_dl_layer_class_id_conversion.
+*
+dev_update_off ()
+set_system ('seed_rand', 42)
+*
+* Create simple segmentation model.
+NumClasses := 3
+InputShape := [32, 32, 3]
+*
+* Input feeding layers.
+create_dl_layer_input ('image', InputShape, [], [], DLLayerInput)
+create_dl_layer_input ('target', [InputShape[0],InputShape[1],1], [], [], \
+                       DLLayerTarget)
+create_dl_layer_class_id_conversion (DLLayerTarget, 'target_internal', \
+                                     'from_class_id', [], [], \
+                                     DLLayerTargetInternal)
+* Feature extraction layers.
+create_dl_layer_convolution (DLLayerInput, 'conv1', 3, 1, 1, 32, 1, \
+                             'half_kernel_size', 'relu', [], [], \
+                             DLLayerConv1)
+create_dl_layer_convolution (DLLayerConv1, 'conv2', 3, 1, 1, 32, 1, \
+                             'half_kernel_size', 'relu', [], [], \
+                             DLLayerConv2)
+* Output generation layers.
+create_dl_layer_convolution (DLLayerConv2, 'conv_final', 1, 1, 1, \
+                             NumClasses, 1, 'none', 'none', [], [], \
+                             DLLayerConvFinal)
+create_dl_layer_softmax (DLLayerConvFinal, 'softmax', [], [], \
+                          DLLayerSoftMax)
+create_dl_layer_depth_max (DLLayerSoftMax, 'output_internal', \
+                           'argmax', [], [], DLLayerOutputInternal, _)
+create_dl_layer_class_id_conversion (DLLayerOutputInternal, 'output', \
+                                     'to_class_id', [], [], DLLayerOutput)
+* Loss layer.
+create_dl_layer_loss_cross_entropy (DLLayerSoftMax, DLLayerTargetInternal, \
+                                    [], 'loss', 1.0, [], [], DLLayerLoss)
+*
+* Create the model.
+create_dl_model ([DLLayerOutput, DLLayerLoss], DLModelHandle)
+set_dl_model_param (DLModelHandle, 'type', 'segmentation')
+set_dl_model_param (DLModelHandle, 'runtime', 'cpu')
+*
+* Test model on dummy example data.
+read_image (Image, 'claudia')
+zoom_image_size (Image, Image, InputShape[0], InputShape[1], 'constant')
+convert_image_type (Image, Image, 'real')
+*
+* Fill target image with specific target class IDs.
+ClassIDs := [42, 17, 5]
+gen_image_const (Target, 'real', InputShape[0], InputShape[1])
+paint_region (Target, Target, Target, ClassIDs[0], 'fill')
+gen_rectangle1 (RectClass1, 1, 3, 16, 27)
+paint_region (RectClass1, Target, Target, ClassIDs[1], 'fill')
+gen_rectangle1 (RectClass2, 19, 1, 30, 30)
+paint_region (RectClass2, Target, Target, ClassIDs[2], 'fill')
+*
+* Set class IDs in the model.
+set_dl_model_param (DLModelHandle, 'class_ids', ClassIDs)
+*
+* Create test sample.
+create_dict (DLSample)
+set_dict_object (Image, DLSample, 'image')
+set_dict_object (Target, DLSample, 'target')
+*
+* Train model for a few iterations. Note that training would not
+* work without the first class ID conversion layer 'target_internal'.
+for Idx := 1 to 100 by 1
+    train_dl_model_batch (DLModelHandle, DLSample, DLTrainResult)
+endfor
+*
+* Apply model on test image. With the second class ID conversion
+* layer 'output', the image now contains values according to the
+* target IDs in segmentation_image.
+apply_dl_model (DLModelHandle, DLSample, [], DLApplyResult)
+get_dict_object (SegmentationImage, DLApplyResult, 'output')
+dev_display (SegmentationImage)
+```
+
+## Module
+
+Deep Learning Professional

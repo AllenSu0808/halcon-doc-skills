@@ -1,0 +1,122 @@
+# saddle_points_sub_pix (Operator)
+
+## Name
+
+`saddle_points_sub_pix` — Subpixel precise detection of saddle points in an image.
+
+## Signature
+
+`saddle_points_sub_pix(Image : : Filter, Sigma, Threshold : Row, Column)`
+
+## Description
+
+`saddle_points_sub_pix` extracts saddle points from the image
+*`Image`* with subpixel precision, i.e.,
+points where along one direction the image intensity is minimal while at the
+same time along a different direction the image intensity is maximal.
+To do so, in each point the input image is approximated by a quadratic
+polynomial in x and y and subsequently the polynomial is examined for
+saddle points. The partial derivatives, which are
+necessary for setting up the polynomial, are calculated either with various
+Gaussian derivatives or using the facet model, depending on *`Filter`*.
+In the first case, *`Sigma`* determines the size of the Gaussian
+kernels, while in the second case, before being processed the input image is
+smoothed by a Gaussian whose size is determined by *`Sigma`*.
+Therefore, *'facet'* results in a faster extraction at the expense
+of slightly less accurate results. A point
+is accepted to be a saddle point if the absolute values of both
+eigenvalues of the Hessian matrix are greater than *`Threshold`* but
+their signs differ. The eigenvalues correspond to the curvature of the gray
+value surface.
+
+`saddle_points_sub_pix` is especially useful for the detection of
+corners, where fields of different intensity join together like the black
+and white fields of a chess board. Their high contrast and shape facilitate
+the location and the determination of the precise position of such corners.
+
+## Attention
+
+Note that filter operators may return unexpected results if
+an image with a reduced domain is used as input. Please refer to the
+chapter [Filters](toc_filters.md).
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on internal data level.
+
+## Parameters
+
+**`Image`** (input_object)  singlechannelimage `→` object (byte / int1 / int2 / uint2 / int4 / real)
+
+Input image.
+
+**`Filter`** (input_control)  string `→`  (string)
+
+Method for the calculation of the partial derivatives.
+
+Default:
+'facet'
+
+List of values:
+'facet', 'gauss'
+
+**`Sigma`** (input_control)  real `→`  (real)
+
+Sigma of the Gaussian.
+If *`Filter`* is 'facet', *`Sigma`* may be 0.0
+to avoid the smoothing of the input image.
+
+Suggested values:
+0.7, 0.8, 0.9, 1.0, 1.2, 1.5, 2.0, 3.0
+
+Restriction:
+`Sigma >= 0.0`
+
+**`Threshold`** (input_control)  real `→`  (real)
+
+Minimum absolute value of the eigenvalues of the
+Hessian matrix.
+
+Default:
+5.0
+
+Suggested values:
+2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0
+
+Restriction:
+`Threshold >= 0.0`
+
+**`Row`** (output_control)  point.y-array `→`  (real)
+
+Row coordinates of the detected saddle points.
+
+**`Column`** (output_control)  point.x-array `→`  (real)
+
+Column coordinates of the detected saddle points.
+
+## Result
+
+`saddle_points_sub_pix` returns 2 (
+H_MSG_TRUE)
+if all parameters are correct
+and no error occurs during the execution. If the input is empty the
+behavior can be set via
+`set_system('no_object_result',<Result>)`. If
+necessary, an exception is raised.
+
+## Possible Successors
+
+`gen_cross_contour_xld`,
+`disp_cross`
+
+## Alternatives
+
+`critical_points_sub_pix`,
+`local_min_sub_pix`,
+`local_max_sub_pix`
+
+## Module
+
+Foundation

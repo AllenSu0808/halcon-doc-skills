@@ -1,0 +1,92 @@
+# moments_region_2nd_invar (Operator)
+
+## Name
+
+`moments_region_2nd_invar` — Geometric moments of regions.
+
+## Signature
+
+`moments_region_2nd_invar(Regions : : : M11, M20, M02)`
+
+## Description
+
+The operator `moments_region_2nd_invar` calculates the
+scaled moments (*`M20`*, *`M02`*)
+and the product of inertia of the axes through the center parallel to the
+coordinate axes (*`M11`*).
+
+- **Calculation:** —
+
+  $Z_{0}$ and $S_{0}$ are the coordinates
+  of the center of a region R with the area F.
+  Then the moments $M_{ij}$ are defined by:
+
+  $$M_{ij} = \frac{1}{F^2} \sum_{(Z,S) \in R} (Z_0 - Z)^i (S_0 - S)^j$$ ![figure](../assets/7f07777bb19b7aa0.svg),
+
+  wherein Z and S run through all pixels of the region
+  R.
+
+If more than one region is passed the results are stored in tuples, the index
+of a value in the tuple corresponding to the index of a region in the input.
+
+In case of empty region all parameters have the value 0.0 if no other
+behavior was set (see [`set_system`](set_system.md)).
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Automatically parallelized on tuple level.
+
+## Parameters
+
+**`Regions`** (input_object)  region(-array) `→` object
+
+Regions to be examined.
+
+**`M11`** (output_control)  real(-array) `→`  (real)
+
+Product of inertia of the axes through the center
+parallel to the coordinate axes.
+
+**`M20`** (output_control)  real(-array) `→`  (real)
+
+Moment of 2nd order (line-dependent).
+
+**`M02`** (output_control)  real(-array) `→`  (real)
+
+Moment of 2nd order (column-dependent).
+
+## Complexity
+
+If F is the area of the region the mean runtime
+complexity is O(sqrt(F)).
+
+## Result
+
+The operator `moments_region_2nd_invar` returns the value 2 (
+H_MSG_TRUE)
+if the input is not empty.
+The behavior in case of empty input (no input regions available) is
+set via the operator `set_system('no_object_result',<Result>)`.
+The behavior in case of empty region (the region is the empty set) is set via
+`set_system('empty_region_result',<Result>)`.
+If necessary an exception is raised.
+
+## Possible Predecessors
+
+`threshold`,
+`regiongrowing`,
+`connection`
+
+## Alternatives
+
+`moments_region_2nd`
+
+## See also
+
+`elliptic_axis`
+
+## Module
+
+Foundation

@@ -1,0 +1,113 @@
+# vector_to_rigid (Operator)
+
+## Name
+
+`vector_to_rigid` — Approximate a rigid affine transformation from point correspondences.
+
+## Signature
+
+`vector_to_rigid( : : Px, Py, Qx, Qy : HomMat2D)`
+
+## Description
+
+`vector_to_rigid` approximates a rigid affine transformation, i.e., a
+transformation consisting of a rotation and a translation, from at least two
+point correspondences and returns it as the homogeneous
+transformation matrix *`HomMat2D`*. The matrix consists of 2 components:
+a rotation matrix R and a translation vector
+t (also see [`hom_mat2d_rotate`](hom_mat2d_rotate.md) and
+[`hom_mat2d_translate`](hom_mat2d_translate.md)):
+
+$$\text{HomMat2D} = \begin{bmatrix} R & T \\ 0 & 1 \end{bmatrix} = \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 0 & 0 \end{bmatrix} \cdot \begin{bmatrix} R \\ 0 \\ 0 \end{bmatrix} = H(T) \cdot H(R)$$ ![figure](../assets/0b9d6103538635fe.svg)
+
+The point correspondences are passed in the tuples (*`Px`*,
+*`Py`*) and (*`Qx`*,*`Qy`*), where
+corresponding points must be at the same index positions in the tuples.
+The transformation is always overdetermined. Therefore, the returned
+transformation is the transformation that minimizes the distances between
+the original points (*`Px`*,*`Py`*) and the transformed points
+(*`Qx`*,*`Qy`*), as described in the following equation
+(points as homogeneous vectors):
+
+$$\sum_{i} \bigg\|\begin{pmatrix} Q_x[i] \\ Q_y[i] \\ 1 \end{pmatrix} - \mathrm{HomMat2D} \cdot \begin{pmatrix} P_x[i] \\ P_y[i] \\ 1 \end{pmatrix}\bigg\|^2 = \text{minimum}$$ ![figure](../assets/f1be0337180510f4.svg)
+
+*`HomMat2D`* can be used directly with operators that transform data
+using affine transformations, e.g., [`affine_trans_image`](affine_trans_image.md).
+
+## Attention
+
+It should be noted that homogeneous transformation matrices refer to
+a general right-handed mathematical coordinate system. If a
+homogeneous transformation matrix is used to transform images,
+regions, XLD contours, or any other data that has been extracted
+from images, the row coordinates of the transformation must be
+passed in the x coordinates, while the column coordinates must be
+passed in the y coordinates. Consequently, the order of passing row
+and column coordinates follows the usual order
+(`Row`,`Column`). This convention is essential to
+obtain a right-handed coordinate system for the transformation of
+iconic data, and consequently to ensure in particular that rotations
+are performed in the correct mathematical direction.
+
+Furthermore, it should be noted that if a homogeneous transformation
+matrix is used to transform images, regions, XLD contours, or any
+other data that has been extracted from images, it is assumed that
+the origin of the coordinate system of the homogeneous
+transformation matrix lies in the upper left corner of a pixel. The
+image processing operators that return point coordinates, however,
+assume a coordinate system in which the origin lies in the center of
+a pixel. Therefore, to obtain a consistent homogeneous
+transformation matrix, 0.5 must be added to the point coordinates
+before computing the transformation.
+
+## Execution Information
+
+- Multithreading type: reentrant (runs in parallel with non-exclusive operators).
+- Multithreading scope: global (may be called from any thread).
+- Processed without parallelization.
+
+## Parameters
+
+**`Px`** (input_control)  point.x-array `→`  (real)
+
+X coordinates of the original points.
+
+**`Py`** (input_control)  point.y-array `→`  (real)
+
+Y coordinates of the original points.
+
+**`Qx`** (input_control)  point.x-array `→`  (real)
+
+X coordinates of the transformed points.
+
+**`Qy`** (input_control)  point.y-array `→`  (real)
+
+Y coordinates of the transformed points.
+
+**`HomMat2D`** (output_control)  hom_mat2d `→`  (real)
+
+Output transformation matrix.
+
+## Possible Successors
+
+`affine_trans_image`,
+`affine_trans_image_size`,
+`affine_trans_region`,
+`affine_trans_contour_xld`,
+`affine_trans_polygon_xld`,
+`affine_trans_point_2d`
+
+## Alternatives
+
+`vector_to_hom_mat2d`,
+`vector_to_aniso`,
+`vector_to_similarity`
+
+## See also
+
+`vector_field_to_hom_mat2d`,
+`point_line_to_hom_mat2d`
+
+## Module
+
+Foundation
