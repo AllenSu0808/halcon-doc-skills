@@ -1,4 +1,4 @@
-"""命令列介面：crawl / convert / verify。"""
+"""命令列介面：crawl / convert / verify / build-skill。"""
 
 from __future__ import annotations
 
@@ -13,6 +13,7 @@ from .cache import PageCache
 from .formulas import FormulaStore
 from .ocr import OcrOptions
 from .pipeline import convert_all, crawl, resolve_formulas
+from .skill_build import MAX_FAILURE_RATE, BuildReport, build_skill
 from .verify import verify_output
 
 log = logging.getLogger(__name__)
@@ -47,6 +48,11 @@ def build_parser() -> argparse.ArgumentParser:
 
     verify_p = sub.add_parser("verify", help="檢查輸出品質")
     _add_paths(verify_p, cache=False)
+
+    skill_p = sub.add_parser("build-skill", help="產生 HALCON skill 資料夾")
+    _add_paths(skill_p, cache=False)
+    skill_p.add_argument("--template", type=Path, default=Path("skill_template"))
+    skill_p.add_argument("--out", type=Path, default=Path("dist/skill/halcon"))
     return parser
 
 
@@ -78,10 +84,31 @@ def _convert(cache: PageCache, args: argparse.Namespace) -> None:
     convert_all(cache, args.output, formulas=store.results())
 
 
+def _log_build(report: BuildReport) -> None:
+    """輸出 build-skill 各語言統計與解析失敗頁面。"""
+    if not report.stats:
+        log.error("找不到任何語言的文件資料夾")
+    for lang, stats in report.stats.items():
+        log.info(
+            "%s：%d 頁、%d 運算子、%d 類別、%d 簽章、%d 參數、%d 解析失敗",
+            lang,
+            stats.pages,
+            stats.operators,
+            stats.classes,
+            stats.signatures,
+            stats.params,
+            len(stats.failed),
+        )
+        for page in stats.failed:
+            log.warning("%s 解析失敗：%s", lang, page)
+        if stats.failure_rate > MAX_FAILURE_RATE:
+            log.error("%s 解析失敗率 %.1f%% 超過門檻", lang, stats.failure_rate * 100)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     """程式進入點。
 
-    :return: 結束碼；``verify`` 發現問題時為 1，其餘為 0。
+    :return: 結束碼；``verify`` 發現問題或 ``build-skill`` 失敗時為 1，其餘為 0。
     """
     args = build_parser().parse_args(argv)
     logging.basicConfig(
@@ -93,6 +120,14 @@ def main(argv: Sequence[str] | None = None) -> int:
             log.error(problem)
         log.info("各語言 .md 檔案數：%s", report.counts)
         return 0 if report.ok else 1
+    if args.command == "build-skill":
+        try:
+            build = build_skill(args.output, args.template, args.out)
+        except FileExistsError as error:
+            log.error(error)
+            return 1
+        _log_build(build)
+        return 0 if build.ok else 1
 
     cache = PageCache(args.cache_dir)
     if args.command == "crawl":

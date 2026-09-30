@@ -41,3 +41,17 @@
 - 解碼成功的公式不產生 `.svg`；未轉成 LaTeX 的公式才會出現在 `output/assets/`。
 - 中斷後重跑 `crawl` 會沿用 `cache/`，只補抓缺少的頁面。
 - 失敗的網址記錄在 `cache/failed.txt`。
+
+## 產生 Claude Code skill
+
+    uv run halcon-doc-skills build-skill                    # 產生到 dist/skill/halcon/
+    uv run halcon-doc-skills build-skill --out /tmp/halcon  # 指定輸出位置
+
+把 `dist/skill/halcon/` 整個複製到 HALCON 專案的 `.claude/skills/halcon/`。
+
+- 只需要部分語言時，刪除 `references/<lang>/` 與 `pitfalls/<lang>.md` 即可。
+- skill 附帶 `scripts/halcon_doc.py`（Python 3.10+，只用標準函式庫），提供
+  `search`、`sig`、`params`、`section`、`class`、`check` 子命令。
+- `--out` 已存在但不是先前產生的 skill（沒有 `SKILL.md`）時會拒絕覆寫。
+- skill 原始檔在 `skill_template/`；修改後重跑 `build-skill` 並重新複製到專案。
+
