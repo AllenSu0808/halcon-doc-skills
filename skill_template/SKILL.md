@@ -1,5 +1,5 @@
 ---
-name: halcon
+name: halcon-expert
 description: Use when writing, reviewing, or debugging code that calls MVTec HALCON (HalconDotNet / HOperatorSet / HImage, Python `halcon` package, or HDevelop .hdev scripts). Look up operators and verify signatures against the bundled HALCON 26.05 reference before writing calls.
 ---
 
@@ -21,7 +21,7 @@ description: Use when writing, reviewing, or debugging code that calls MVTec HAL
 
 ## 查詢工具
 
-以下 `$HDOC` 代表 `python .claude/skills/halcon/scripts/halcon_doc.py`
+以下 `$HDOC` 代表 `python .claude/skills/halcon-expert/scripts/halcon_doc.py`
 （Windows 可用 `py -3`；需要 Python 3.10 以上，只用標準函式庫）。
 
 | 指令 | 用途 |
@@ -43,7 +43,7 @@ description: Use when writing, reviewing, or debugging code that calls MVTec HAL
 ## 工作流程
 
 1. **找運算子**：不確定時用 `search`，或以 Grep 在
-   `.claude/skills/halcon/references/<lang>/INDEX.md` 找分類段落
+   `.claude/skills/halcon-expert/references/<lang>/INDEX.md` 找分類段落
    （INDEX.md 很大，只 Grep，不要整份讀）。
 2. **取簽章**：`sig <名稱>`。依專案風格挑選一種寫法，不要混用：
    - .NET：`HOperatorSet.X(...)`（HDevelop 匯出風格），或物件導向的 `HImage` / `HShapeModel` 方法。
@@ -74,7 +74,7 @@ description: Use when writing, reviewing, or debugging code that calls MVTec HAL
 
 ## 文件位置與退路
 
-- 頁面：`.claude/skills/halcon/references/<lang>/<snake_case 名稱>.md`
+- 頁面：`.claude/skills/halcon-expert/references/<lang>/<snake_case 名稱>.md`
   （三種語言檔名相同，例如 dotnet 的 `FindShapeModel` 在 `find_shape_model.md`）。
 - 類別頁（僅 dotnet）：`references/dotnet/HShapeModel.md` 等。
 - 簽章表：`references/<lang>/SIGNATURES.tsv`（欄位：name、kind、owner、signature、summary、page）。

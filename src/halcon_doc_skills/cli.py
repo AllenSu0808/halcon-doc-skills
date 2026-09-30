@@ -52,7 +52,7 @@ def build_parser() -> argparse.ArgumentParser:
     skill_p = sub.add_parser("build-skill", help="產生 HALCON skill 資料夾")
     _add_paths(skill_p, cache=False)
     skill_p.add_argument("--template", type=Path, default=Path("skill_template"))
-    skill_p.add_argument("--out", type=Path, default=Path("dist/skill/halcon"))
+    skill_p.add_argument("--out", type=Path, default=Path("dist/skill/halcon-expert"))
     return parser
 
 

@@ -44,10 +44,10 @@
 
 ## 產生 Claude Code skill
 
-    uv run halcon-doc-skills build-skill                    # 產生到 dist/skill/halcon/
-    uv run halcon-doc-skills build-skill --out /tmp/halcon  # 指定輸出位置
+    uv run halcon-doc-skills build-skill                           # 產生到 dist/skill/halcon-expert/
+    uv run halcon-doc-skills build-skill --out /tmp/halcon-expert  # 指定輸出位置
 
-把 `dist/skill/halcon/` 整個複製到 HALCON 專案的 `.claude/skills/halcon/`。
+把 `dist/skill/halcon-expert/` 整個複製到 HALCON 專案的 `.claude/skills/halcon-expert/`。
 
 - 只需要部分語言時，刪除 `references/<lang>/` 與 `pitfalls/<lang>.md` 即可。
 - skill 附帶 `scripts/halcon_doc.py`（Python 3.10+，只用標準函式庫），提供

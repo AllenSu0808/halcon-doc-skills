@@ -21,7 +21,7 @@ def _frontmatter() -> dict[str, str]:
 
 def test_frontmatter_has_name_and_trigger_description() -> None:
     meta = _frontmatter()
-    assert meta["name"] == "halcon"
+    assert meta["name"] == "halcon-expert"
     assert meta["description"].startswith("Use when")
     assert len(meta["description"]) <= 1024
 
